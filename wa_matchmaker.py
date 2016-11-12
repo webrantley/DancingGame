@@ -1,4 +1,4 @@
-from dating import utils
+import utils
 import sys
 import socket
 import numpy as np
