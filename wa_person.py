@@ -22,25 +22,25 @@ def adjust_weights(initial_weights, guess):
 
 def main():
     port = int(sys.argv[1])
-    socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    socket.connect(('localhost', port))
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(('localhost', port))
     num_of_attributes = int(socket.recv(4))
 
     initial_weights = generate_weights(num_of_attributes)
 
-    socket.sendall(floats_to_msg2(initial_weights))
+    sock.sendall(utils.floats_to_msg2(initial_weights))
     # Send ideal (positive) candidate positions
-    socket.sendall(candidate_to_msg(initial_weights > 0))
+    sock.sendall(utils.candidate_to_msg(initial_weights > 0))
     # Send anti-ideal (negative) candidate positions
-    socket.sendall(candidate_to_msg(initial_weights < 0))
+    sock.sendall(utils.candidate_to_msg(initial_weights < 0))
 
     for i in range(20):
-        matchmaker_guess = socket.recv(8 * num_of_attributes)
+        matchmaker_guess = sock.recv(8 * num_of_attributes)
         matchmaker_guess = [float(attr.strip()) for attr in matchmaker_guess.split(',')]
         adjusted_weights = adjust_weights(initial_weights, matchmaker_guess)
-        socket.sendall(floats_to_msg2(adjusted_weights))
+        sock.sendall(utils.floats_to_msg2(adjusted_weights))
 
-    socket.close()
+    sock.close()
 
 if __name__=="__main__":
     main()

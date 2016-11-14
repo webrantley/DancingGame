@@ -1,5 +1,3 @@
-
-
 def binary_candidate_score_to_msg(score, candidate):
     msg = '%+1.4f:' % score
 
