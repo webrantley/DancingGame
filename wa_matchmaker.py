@@ -7,9 +7,10 @@ from sklearn import datasets, linear_model
 def guess_weights(scores, weights, iter_num):
     X = np.array([np.array(weight) for weight in weights])
     y = np.array(scores)
-    print 1 + 10.0 * iter_num / 20
-    clf = linear_model.Ridge(alpha = 1 - 0.5 * (iter_num) / 20)
-    clf = linear_model.LinearRegression()
+    if(iter_num % 2 == 0):
+        clf = linear_model.Ridge(alpha=0.1)
+    else:
+        clf = linear_model.LinearRegression()
     clf.fit(X, y)
     a = clf.coef_
     for x in np.nditer(a, op_flags=['readwrite']):
@@ -17,7 +18,6 @@ def guess_weights(scores, weights, iter_num):
             x[...] = 0
         else:
             x[...] = 1
-    print a
     return a
     """Guess the weights of the Person's attributes based on past scores
     and weights of those scores, included as arguments. Return the your 
@@ -39,8 +39,6 @@ def main():
         sample_weights = [float(attr.strip()) for attr in training_sample[8:].split(',')]
         weights.append(sample_weights)
 
-    print(scores)
-    print(weights)
     for i in range(20):
         guess = guess_weights(scores, weights, i)
         sock.sendall(utils.floats_to_msg4(guess))
